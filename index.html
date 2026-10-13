@@ -55,7 +55,9 @@
       // Les états initiaux d'animation ne sont posés que si le mouvement est permis.
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-motion')
       document.documentElement.classList.add('js')
-      setTimeout(function () { document.documentElement.classList.add('motion-failsafe') }, 4500)
+      // Filet de sécurité: si le script principal n'a pas démarré (erreur, réseau), tout s'affiche.
+      setTimeout(function () { if (!window.__motionReady) document.documentElement.classList.add('motion-failsafe') }, 4500)
+      addEventListener('error', function () { if (!window.__motionReady) document.documentElement.classList.add('motion-failsafe') })
     </script>
   </head>
   <body>

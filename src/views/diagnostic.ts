@@ -7,7 +7,8 @@ import { carSVG, voyantBadge } from '../core/art'
 import { gsap } from '../core/motion'
 import { esc, norm, reducedMotion, typo, u } from '../core/dom'
 import { ico } from '../core/icons'
-import { arrowLink, callButton, finalCta, pageHead } from './ui'
+import { arrowLink, callButton, finalCta, pageHead, photoFig, photoSlim } from './ui'
+import { photoBySlug } from '../data/photos'
 
 const urgencyText = { surveiller: 'À surveiller', 'bientôt': 'À voir bientôt', rapidement: 'À voir rapidement' } as const
 
@@ -32,6 +33,7 @@ ${pageHead({ title: 'Ça fait quel bruit ?', lead: 'Choisissez ce que vous enten
 
 <section class="wrap voyants" aria-labelledby="voy-h">
   <h2 id="voy-h" data-split>Les voyants du tableau de bord</h2>
+  <div class="ph-pair voy-ph">${['tableau-bord', 'compte-tours'].map((x, i) => photoFig(photoBySlug(x), '', i === 0)).join('')}</div>
   <p class="lead" data-reveal>Rouge: arrêtez-vous dès que possible. Orange: à faire contrôler bientôt. Quelques repères, valables pour la plupart des voitures; le carnet de la vôtre fait foi.</p>
   <ul class="voy-grid">${voyants
     .map(
@@ -40,6 +42,7 @@ ${pageHead({ title: 'Ça fait quel bruit ?', lead: 'Choisissez ce que vous enten
     .join('')}</ul>
 </section>
 
+${photoSlim(['pneu-voiture', 'capot-ouvert', 'sculpture-pneu'].map(photoBySlug), 'Contrôles avant de partir, photos d’illustration')}
 <section class="wrap checks" aria-labelledby="chk-h">
   <h2 id="chk-h" data-split>Les listes avant de partir</h2>
   <div class="chips" role="tablist" aria-label="Listes">${checklists

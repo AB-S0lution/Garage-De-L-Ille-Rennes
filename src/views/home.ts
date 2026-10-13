@@ -1,6 +1,6 @@
 import type { View } from '../core/router'
 import { carSVG, glyph, quartierSVG, wearTag } from '../core/art'
-import { gsap, ScrollTrigger, DESKTOP_MOTION } from '../core/motion'
+import { gsap, ScrollTrigger, DESKTOP_MOTION, TOUCH_MOTION } from '../core/motion'
 import { u } from '../core/dom'
 import { ico } from '../core/icons'
 import { statusChip } from '../core/status'
@@ -14,7 +14,7 @@ import { headlineRating } from '../data/ratings'
 import { process, stats, brands, quartier, access } from '../data/misc'
 import { etabliHTML, initEtabli } from './etabli'
 import { arrowLink, callButton, finalCta, miniPair, quoteCard, photoFig, photoThumb } from './ui'
-import { photos, photoBySlug } from '../data/photos'
+import { photos, photoBySlug, familyPhoto } from '../data/photos'
 
 const firstSentence = (s: string) => s.split(/(?<=[.!?])\s/)[0]
 
@@ -113,6 +113,7 @@ function famillesHTML(): string {
       .map((f, i) => {
         const n = services.filter((s) => s.family === f.slug).length
         return `<a class="fam-card ${spans[i]}" href="${u('/atelier/' + f.slug)}" data-reveal>
+          ${photoThumb(familyPhoto(f.slug, 1), 'fam-ph')}
           <div class="fam-art">${miniPair(f.slug)}</div>
           <div class="fam-txt"><h3>${f.name}</h3><p>${firstSentence(f.intro)}</p><span class="fam-meta mono">${n} prestations</span></div>
           <span class="fam-go" aria-hidden="true">${ico.arrow(22)}</span>
@@ -143,6 +144,7 @@ function casesHTML(): string {
       <h2 id="cases-h" data-split>Pièces sur l’établi</h2>
       <p class="lead" data-reveal>Des cas types, racontés comme au comptoir: ce que le client entendait, ce que nous avons trouvé, ce que nous avons montré. Les exemples sont fictifs, sauf un.</p>
     </div>
+    <p class="swipe-hint mono" aria-hidden="true">Faites glisser pour voir les ${cases.length} cas ${ico.arrow(16)}</p>
     <ul class="cases-track" tabindex="0" aria-label="Cas d’atelier, à faire défiler">
       ${cases
         .map(
@@ -236,8 +238,10 @@ export function homeView(): View {
       // Héros: les pièces de frein sortent une fois la voiture dessinée
       const ex = root.querySelectorAll('.hero .ex-part')
       if (ex.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.from(ex, { y: 100, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.16, delay: 1.5 })
-        gsap.from('.hero .callout', { opacity: 0, y: 6, duration: 0.6, stagger: 0.12, delay: 2.4 })
+        // Sur téléphone: course plus courte et départ plus tôt (le dessin est petit, l'attente se voit)
+        const phone = window.matchMedia('(max-width: 599px)').matches
+        gsap.from(ex, { y: phone ? 60 : 100, opacity: 0, duration: phone ? 0.9 : 1.1, ease: 'expo.out', stagger: phone ? 0.12 : 0.16, delay: phone ? 0.9 : 1.5 })
+        gsap.from('.hero .callout', { opacity: 0, y: 6, duration: 0.6, stagger: 0.12, delay: phone ? 1.6 : 2.4 })
       }
 
       initEtabli(root)
@@ -287,6 +291,24 @@ export function homeView(): View {
           scrollTrigger: { trigger: wrap, start: 'top top', end: () => `+=${dist()}`, pin: true, scrub: 0.8, anticipatePin: 1, invalidateOnRefresh: true },
         })
         return () => root.querySelector('.cases-pan')?.classList.remove('is-pinned')
+      })
+
+      // Téléphones et tablettes tactiles: pas d'épinglage. Les étapes montent une à une,
+      // les pièces sortent de la voiture au fil du défilement (scrub court, sans pin),
+      // et les cas glissent au doigt avec une entrée en cascade.
+      mm.add(TOUCH_MOTION, () => {
+        const sec = root.querySelector<HTMLElement>('.parcours')
+        if (!sec) return
+        gsap.utils.toArray<HTMLElement>('.p-step', sec).forEach((s) =>
+          gsap.from(s, { y: 22, opacity: 0, duration: 0.55, ease: 'power3.out', clearProps: 'transform,opacity', scrollTrigger: { trigger: s, start: 'top 90%', once: true } }),
+        )
+        const sheet = sec.querySelector<HTMLElement>('.p-sheet')
+        const parts = gsap.utils.toArray<SVGGElement>('.ex-part', sec)
+        if (sheet && parts.length)
+          gsap.fromTo(parts, { y: 60, opacity: 0.15 }, { y: 0, opacity: 1, stagger: 0.12, ease: 'none', scrollTrigger: { trigger: sheet, start: 'top 85%', end: 'center 50%', scrub: 0.4 } })
+        const cards = gsap.utils.toArray<HTMLElement>('.case-card', root).slice(0, 3)
+        if (cards.length)
+          gsap.from(cards, { x: 48, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.08, clearProps: 'transform,opacity', scrollTrigger: { trigger: '.cases-track', start: 'top 85%', once: true } })
       })
 
       // Plan du quartier: la ligne vers le métro se trace

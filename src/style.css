@@ -3020,3 +3020,367 @@ section {
     font-size: 0.875rem;
   }
 }
+
+/* =====================================================================
+   Passe téléphone / tablette : photos partout, grilles, cibles, svh
+   ===================================================================== */
+
+/* Mots longs : jamais de débordement horizontal */
+h1,
+h2,
+h3,
+h4,
+p,
+li,
+dd,
+dt,
+figcaption,
+blockquote,
+address,
+.btn,
+.chip {
+  overflow-wrap: break-word;
+}
+@media (max-width: 599px) {
+  h1,
+  h2,
+  h3 {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+  .hero h1 {
+    font-size: clamp(2.15rem, 10.5vw, 2.9rem);
+  }
+  .page-head h1 {
+    font-size: clamp(1.9rem, 9vw, 2.6rem);
+  }
+  .nf h1 {
+    font-size: clamp(2rem, 9.5vw, 2.8rem);
+  }
+  .final-cta h2 {
+    font-size: clamp(1.75rem, 8vw, 2.4rem) !important;
+  }
+  section h2[data-split],
+  .etabli h2,
+  .parcours h2 {
+    font-size: clamp(1.6rem, 7.4vw, 2.2rem);
+  }
+  /* Libellés trop petits pour un téléphone */
+  .svc-fam,
+  .tag-e,
+  .tag-d,
+  .svc-price span,
+  .case-tag,
+  .case-card dt,
+  .bp-name,
+  .f-lbl {
+    font-size: 0.8125rem;
+  }
+}
+
+/* La barre d'appel fixe ne couvre jamais le contenu (encoche / barre d'accueil iOS) */
+body {
+  padding-bottom: calc(66px + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 900px) {
+  body {
+    padding-bottom: 0;
+  }
+}
+.mobile-bar {
+  padding-left: calc(8px + env(safe-area-inset-left, 0px));
+  padding-right: calc(8px + env(safe-area-inset-right, 0px));
+}
+
+/* Champs : 16 px minimum (pas de zoom iOS), recherche sans chrome natif */
+input,
+select,
+textarea {
+  font-size: max(16px, 1rem);
+}
+.search input {
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0;
+  text-overflow: ellipsis;
+}
+.search input::-webkit-search-decoration,
+.search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+.search input::placeholder {
+  color: var(--soft);
+  opacity: 1;
+}
+.search > svg {
+  flex: none;
+}
+@media (max-width: 420px) {
+  .filters {
+    padding: 12px;
+  }
+  .search {
+    padding: 0 10px;
+    gap: 8px;
+  }
+}
+
+/* Cibles tactiles de 44 px au moins */
+.chip,
+.seg-b,
+.chip-check span {
+  min-height: 44px;
+}
+.faq-item summary {
+  min-height: 48px;
+}
+
+/* 100vh -> svh (barres d'adresse mobiles) */
+@media (min-width: 900px) {
+  .parcours.is-pinned .pin {
+    min-height: 100svh;
+  }
+}
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .cases-pan.is-pinned .cases-wrap {
+    height: 100svh;
+  }
+}
+
+/* Dessin du héros : libellés lisibles et centrés sur téléphone */
+@media (max-width: 599px) {
+  .hero-sheet {
+    padding: 4px;
+    padding-top: 14px;
+  }
+  .hero .car-svg {
+    overflow: visible;
+    width: 100%;
+    margin-inline: auto;
+  }
+  .car-svg .callout {
+    font-size: 31px;
+    letter-spacing: -0.01em;
+  }
+  .car-svg .tag text {
+    font-size: 14px;
+  }
+}
+@media (min-width: 600px) and (max-width: 999px) {
+  .hero-sheet {
+    max-width: 720px;
+    margin-inline: auto;
+    width: 100%;
+  }
+  .car-svg .callout {
+    font-size: 20px;
+  }
+}
+
+/* Cas d'atelier au doigt : défilement aimanté + indice de glissement */
+.cases-track {
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-inline: var(--gut);
+}
+.swipe-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 var(--gut) 12px;
+  font-size: 0.8125rem;
+  color: var(--soft);
+}
+.swipe-hint svg {
+  flex: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .swipe-hint svg {
+    animation: hint-nudge 1.6s var(--ease-io, ease-in-out) infinite;
+  }
+}
+@keyframes hint-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+}
+.cases-pan.is-pinned .swipe-hint {
+  display: none;
+}
+/* Bande photo défilante : au doigt, on la fait glisser soi-même */
+@media (hover: none) and (pointer: coarse) {
+  .ph-strip-track {
+    animation: none !important;
+    width: auto;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-inline: var(--gut);
+    scroll-padding-inline: var(--gut);
+    scrollbar-width: none;
+  }
+  .ph-strip-track::-webkit-scrollbar {
+    display: none;
+  }
+  .ph-strip-it {
+    scroll-snap-align: start;
+    width: min(64vw, 280px);
+  }
+  .ph-strip-it[aria-hidden='true'] {
+    display: none;
+  }
+}
+
+/* Tablettes : grilles à deux colonnes plutôt qu'une longue pile */
+@media (min-width: 600px) and (max-width: 899px) {
+  .info-grid,
+  .pay-row,
+  .eco-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .info-grid > :last-child,
+  .pay-row > :last-child,
+  .eco-row > :last-child {
+    grid-column: 1 / -1;
+  }
+  .fam-card {
+    grid-column: span 6;
+    grid-template-columns: 1fr auto;
+  }
+  .fam-card .fam-art {
+    grid-column: 1 / -1;
+  }
+  .fam-card:last-child {
+    grid-column: span 12;
+  }
+  .case-trio {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 900px) and (max-width: 1099px) {
+  .fam-card.s7,
+  .fam-card.s5 {
+    grid-template-columns: 1fr auto;
+  }
+  .fam-card.s7 .fam-art,
+  .fam-card.s5 .fam-art {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Photos dans les cartes */
+.svc .svc-ph {
+  margin: -8px -8px 4px;
+}
+.svc .svc-ph img {
+  aspect-ratio: 16 / 9;
+}
+.fam-card .fam-ph {
+  grid-column: 1 / -1;
+}
+.fam-card .fam-ph img {
+  aspect-ratio: 21 / 9;
+}
+@media (min-width: 900px) {
+  .fam-card.s4 .fam-ph img {
+    aspect-ratio: 16 / 9;
+  }
+}
+.card-ph {
+  margin: -8px -8px 16px;
+}
+.card-ph img {
+  aspect-ratio: 16 / 9;
+}
+.role-ph {
+  margin-bottom: 14px;
+}
+.role-ph img {
+  aspect-ratio: 16 / 10;
+}
+.voy-ph {
+  margin-block: 8px 24px;
+}
+
+/* Bande fine de photos (FAQ, avis, infos, légal) */
+.ph-slim {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-block: clamp(16px, 3vw, 32px) clamp(28px, 4vw, 48px);
+}
+.ph-slim .ph:first-child {
+  grid-column: 1 / -1;
+}
+.ph-slim .ph img {
+  aspect-ratio: 4 / 3;
+}
+.ph-slim .ph:first-child img {
+  aspect-ratio: 21 / 9;
+}
+@media (min-width: 600px) {
+  .ph-slim {
+    grid-template-columns: 1.6fr 1fr 1fr;
+  }
+  .ph-slim .ph:first-child {
+    grid-column: auto;
+  }
+  .ph-slim .ph img,
+  .ph-slim .ph:first-child img {
+    aspect-ratio: auto;
+    height: clamp(150px, 20vw, 240px);
+  }
+  .ph-slim.is-short .ph img {
+    height: clamp(110px, 13vw, 170px);
+  }
+}
+@media (max-width: 599px) {
+  .ph-slim.is-short .ph:not(:first-child) {
+    display: none;
+  }
+  .ph-cap {
+    font-size: 0.6875rem;
+    left: 6px;
+    bottom: 6px;
+    max-width: calc(100% - 12px);
+  }
+}
+/* Toute image a un ratio réservé, même sans classe */
+.ph-thumb img,
+.ph img {
+  height: auto;
+}
+.ph-band .ph img,
+.ph-pair .ph img {
+  min-height: 0;
+}
+@media (min-width: 760px) {
+  .ph-band .ph img {
+    height: 100%;
+  }
+}
+
+/* Tablette en paysage : établi famille et diagnostic plus aérés */
+@media (min-width: 900px) and (max-width: 1099px) {
+  .finder {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Boucles en pause quand elles sont hors écran */
+.marquee.is-offscreen .marquee-row,
+.ph-strip.is-offscreen .ph-strip-track {
+  animation-play-state: paused;
+}
+@media (max-width: 599px) {
+  .hero .ex-disc .callout {
+    transform: translateY(12px);
+  }
+  .hero-sheet {
+    overflow: visible;
+  }
+}

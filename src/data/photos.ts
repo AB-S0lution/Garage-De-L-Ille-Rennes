@@ -62,3 +62,15 @@ export const photos: Photo[] = [
 
 export const photoBySlug = (slug: string): Photo => photos.find((x) => x.slug === slug) ?? photos[0]
 export const PHOTO_NOTE = 'Photo d’illustration'
+
+/** Deux photos d'illustration par famille de travaux (cartes de prestations, pages famille). */
+export const familyPhotos: Record<string, [string, string]> = {
+  entretien: ['appoint-huile', 'caisse-outils'],
+  freinage: ['frein-gros-plan', 'systeme-freinage'],
+  'moteur-distribution': ['bloc-moteur', 'mecanicien-moteur'],
+  'embrayage-boite': ['voiture-pont', 'piece-etabli'],
+  'echappement-fap': ['sous-vehicule', 'pieces-vrac'],
+  'pneus-suspension': ['jante-pneu', 'piles-pneus'],
+  'hybride-gpl': ['capot-ouvert', 'tableau-bord'],
+}
+export const familyPhoto = (family: string, i = 0): Photo => photoBySlug((familyPhotos[family] ?? ['moteur-atelier', 'cle-mains'])[i % 2])

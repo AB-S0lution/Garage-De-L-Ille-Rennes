@@ -8,6 +8,8 @@ import Lenis from 'lenis'
 import { $$, reducedMotion } from './dom'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
+// Téléphones: la barre d'adresse qui apparaît / disparaît ne relance pas tous les calculs.
+ScrollTrigger.config({ ignoreMobileResize: true })
 
 export { gsap, ScrollTrigger }
 
@@ -39,7 +41,10 @@ export function withMedia(mm: gsap.MatchMedia, query: string, fn: () => void | (
   mm.add(query, fn)
 }
 
-export const DESKTOP_MOTION = '(min-width: 900px) and (prefers-reduced-motion: no-preference)'
+/** Épinglages et défilements « scrubbés »: grand écran ET souris (pas les tablettes tactiles). */
+export const DESKTOP_MOTION = '(min-width: 900px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)'
+/** Téléphones et tablettes tactiles: version plus légère, sans épinglage. */
+export const TOUCH_MOTION = '(max-width: 899px) and (prefers-reduced-motion: no-preference), (hover: none) and (prefers-reduced-motion: no-preference), (pointer: coarse) and (prefers-reduced-motion: no-preference)'
 export const ANY_MOTION = '(prefers-reduced-motion: no-preference)'
 
 const fr = (n: number, decimals = 0) => n.toLocaleString('fr-FR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
@@ -49,6 +54,8 @@ const fr = (n: number, decimals = 0) => n.toLocaleString('fr-FR', { minimumFract
  * Les états initiaux sont posés en CSS (classe .js-motion), jamais cachés sans JS.
  */
 export function enhance(root: HTMLElement, extra?: (ctx: gsap.Context) => void): () => void {
+  ;(window as Window & { __motionReady?: boolean }).__motionReady = true
+  const small = window.matchMedia('(max-width: 899px), (pointer: coarse)').matches
   const ctx = gsap.context(() => {
     if (!reducedMotion()) {
       // Titres: lignes qui montent depuis un masque
@@ -82,7 +89,8 @@ export function enhance(root: HTMLElement, extra?: (ctx: gsap.Context) => void):
       ScrollTrigger.batch($$('[data-reveal]', root), {
         start: 'top 92%',
         once: true,
-        onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out', stagger: 0.07, overwrite: true }),
+        onEnter: (batch) =>
+          gsap.to(batch, { opacity: 1, y: 0, duration: small ? 0.6 : 0.85, ease: 'power3.out', stagger: small ? 0.05 : 0.07, overwrite: true }),
       })
 
       // Tracés SVG qui se dessinent
@@ -105,6 +113,7 @@ export function enhance(root: HTMLElement, extra?: (ctx: gsap.Context) => void):
       // Compteurs
       $$('[data-count]', root).forEach((el) => {
         const to = Number(el.dataset.count)
+        if (!Number.isFinite(to)) return
         const dec = Number(el.dataset.decimals ?? 0)
         const suffix = el.dataset.suffix ?? ''
         const grouping = el.dataset.group !== 'false'
@@ -122,12 +131,39 @@ export function enhance(root: HTMLElement, extra?: (ctx: gsap.Context) => void):
 
       // Parallaxe douce
       $$('[data-parallax]', root).forEach((el) => {
-        const amt = Number(el.dataset.parallax || 8)
+        const amt = Number(el.dataset.parallax || 8) * (small ? 0.4 : 1)
         gsap.fromTo(el, { yPercent: -amt }, { yPercent: amt, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } })
       })
     }
   }, root)
   if (extra) ctx.add(() => extra(ctx))
   requestAnimationFrame(() => ScrollTrigger.refresh())
-  return () => ctx.revert()
+
+  // Boucles CSS (bandeau de marques, bande photo) en pause hors écran
+  const loops = $$('.marquee, .ph-strip', root)
+  const io =
+    'IntersectionObserver' in window && loops.length
+      ? new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle('is-offscreen', !e.isIntersecting)), { rootMargin: '120px' })
+      : null
+  loops.forEach((el) => io?.observe(el))
+
+  // Filet de sécurité: si un déclencheur rate (onglet en arrière-plan, calcul faussé par une image),
+  // tout ce qui est déjà dans l'écran ou au-dessus devient visible, sans animation.
+  const failsafe = () => {
+    $$('[data-reveal]', root).forEach((el) => {
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.85 && getComputedStyle(el).opacity === '0') gsap.set(el, { opacity: 1, y: 0 })
+    })
+    $$('[data-split]', root).forEach((el) => {
+      if (getComputedStyle(el).visibility === 'hidden') gsap.set(el, { visibility: 'visible' })
+    })
+  }
+  const t1 = window.setTimeout(failsafe, 2500)
+  const onScrollEnd = () => window.setTimeout(failsafe, 1200)
+  window.addEventListener('scrollend', onScrollEnd, { passive: true })
+  return () => {
+    window.clearTimeout(t1)
+    window.removeEventListener('scrollend', onScrollEnd)
+    io?.disconnect()
+    ctx.revert()
+  }
 }

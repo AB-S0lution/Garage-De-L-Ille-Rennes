@@ -50,7 +50,11 @@ export function bindBench(scope: HTMLElement, getFamily: () => Family) {
       bench.innerHTML = benchHTML(getFamily(), state)
     }
     if (animate && !reducedMotion()) {
-      gsap.to(bench, { opacity: 0, filter: 'blur(3px)', duration: 0.12, ease: 'power1.in', onComplete: () => { swap(); gsap.to(bench, { opacity: 1, filter: 'blur(0px)', duration: 0.22, ease: 'power2.out' }) } })
+      // Flou seulement sur ordinateur: sur téléphone, un simple fondu (moins coûteux)
+      const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+      const out = fine ? { opacity: 0, filter: 'blur(3px)' } : { opacity: 0 }
+      const back = fine ? { opacity: 1, filter: 'blur(0px)' } : { opacity: 1 }
+      gsap.to(bench, { ...out, duration: 0.12, ease: 'power1.in', onComplete: () => { swap(); gsap.to(bench, { ...back, duration: 0.22, ease: 'power2.out', clearProps: 'filter' }) } })
     } else swap()
   }
   scope.querySelectorAll<HTMLButtonElement>('.seg-b').forEach((b) =>

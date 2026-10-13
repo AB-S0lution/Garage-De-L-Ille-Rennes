@@ -122,5 +122,9 @@ export function photoFig(p: Photo, cls = '', caption = true): string {
     ${caption ? `<figcaption class="ph-cap mono">${PHOTO_NOTE} · <a href="${p.url}" target="_blank" rel="noopener">${esc(p.credit)}, Unsplash</a></figcaption>` : ''}
   </figure>`
 }
+/** Bande fine de photos (pages FAQ, légales, avis…): légende sur la première seulement. */
+export function photoSlim(list: Photo[], label: string, cls = ''): string {
+  return `<section class="wrap ph-slim ${cls}" aria-label="${esc(label)}">${list.map((p, i) => photoFig(p, '', i === 0)).join('')}</section>`
+}
 export const photoThumb = (p: Photo, cls = '') =>
   `<span class="ph-thumb ${cls}"><img src="${p.src}" alt="" width="${p.width}" height="${p.height}" loading="lazy" decoding="async"><span class="ph-tag mono">${PHOTO_NOTE}</span></span>`

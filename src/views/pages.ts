@@ -13,7 +13,7 @@ import { ico } from '../core/icons'
 import { hoursTable } from '../core/layout'
 import { statusChip } from '../core/status'
 import { arrowLink, bindChips, callButton, chips, finalCta, miniPair, pageHead } from './ui'
-import { quoteButton, photoFig } from './ui'
+import { quoteButton, photoFig, photoSlim, photoThumb } from './ui'
 import { photos, photoBySlug, type PhotoTag } from '../data/photos'
 
 /* ------------------------------ Notre façon ------------------------------ */
@@ -34,6 +34,9 @@ ${pageHead({ title: 'Pièce à l’appui', lead: 'Une expression qui veut dire �
     )
     .join('')}
 </section>
+<section class="wrap ph-band" aria-label="Le comptoir et l’établi en images">
+  ${['piece-etabli', 'cle-mains', 'travail-atelier'].map((x, i) => photoFig(photoBySlug(x), i === 0 ? 'ph-tall' : '', i === 0)).join('')}
+</section>
 <section class="wrap steps" aria-labelledby="steps-h">
   <h2 id="steps-h" data-split>Du coup de téléphone aux clés</h2>
   <ol class="step-list">${process.map((s) => `<li data-reveal><h3>${s.title}</h3><p>${s.text}</p></li>`).join('')}</ol>
@@ -48,16 +51,19 @@ ${pageHead({ title: 'Pièce à l’appui', lead: 'Une expression qui veut dire �
 </section>
 <section class="wrap eco-row" aria-labelledby="eco-h">
   <div class="eco" data-reveal>
+    ${photoThumb(photoBySlug('appoint-huile'), 'card-ph')}
     <h2 id="eco-h">${ico.leaf(26)} Garage Propre, Garage Vert</h2>
     <p>Le garage indique suivre la démarche Garage Propre: huiles usagées, liquide de refroidissement, batteries, filtres et pneus sont traités par des filières conformes à la réglementation.</p>
     <p class="fine">Démarche déclarée par le garage. Aucun label officiel n’est affiché ici tant qu’il n’est pas confirmé.</p>
   </div>
   <div class="parts-col" data-reveal>
+    ${photoThumb(photoBySlug('pieces-etagere'), 'card-ph')}
     <h2>Pièces de marques reconnues</h2>
     <p>Nous travaillons avec des équipementiers que vous connaissez.</p>
     <ul class="brand-list">${brands.map((b) => `<li>${b}</li>`).join('')}</ul>
   </div>
   <div class="loan" data-reveal>
+    ${photoThumb(photoBySlug('voiture-atelier'), 'card-ph')}
     <h2>${ico.car(26)} Véhicule de remplacement</h2>
     <p>Selon disponibilité et sur demande lors de la prise de rendez-vous. Autre option: la station de métro B Les Gayeulles est à environ 220 m.</p>
   </div>
@@ -108,7 +114,7 @@ ${pageHead({ title: 'De Chantepie aux Gayeulles', lead: 'Un garage de quartier, 
   <h2 id="team-h" data-split>Deux voix, un même comptoir</h2>
   <div class="team-grid">${team
     .map(
-      (t) => `<article class="role" data-reveal><div class="photo-slot" role="img" aria-label="Emplacement réservé à une photo fournie par le garage"><span class="mono">Photo à fournir par le garage</span></div><h3>${t.role}${SITE.CONFIRMED_TEAM_NAMES && t.firstName ? `, ${t.firstName}` : ''}</h3><p>${t.text}</p></article>`,
+      (t, i) => `<article class="role" data-reveal>${photoThumb(photoBySlug(i % 2 ? 'controle-moteur' : 'suv-atelier'), 'role-ph')}<h3>${t.role}${SITE.CONFIRMED_TEAM_NAMES && t.firstName ? `, ${t.firstName}` : ''}</h3><p>${t.text}</p></article>`,
     )
     .join('')}</div>
 </section>
@@ -136,6 +142,7 @@ ${pageHead({ title: 'Ce que disent nos clients', lead: `${headlineRating.label}.
     .map((r) => `<li data-reveal><strong class="mono">${String(r.rating).replace('.', ',')}/5</strong> <span>${r.platform}, ${r.count}</span><em>${r.via}, relevé le ${new Date(r.seenOn + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</em></li>`)
     .join('')}</ul>
 </section>
+${photoSlim(['voiture-pont', 'cle-mains', 'jante-pneu'].map(photoBySlug), 'L’atelier en images')}
 <section class="wrap reviews-all" aria-label="Avis">
   <div class="rv-top" data-reveal>
     ${chips([{ value: '', label: 'Tous' }, ...themeList.map((t) => ({ value: t, label: t }))], 'Thème', '')}
@@ -192,6 +199,7 @@ ${pageHead({ title: 'Infos pratiques', lead: 'Où nous trouver, quand venir, com
     <p><a href="${SITE.facebook}" target="_blank" rel="noopener">Page Facebook du garage ${ico.external(14)}</a></p>
   </div>
 </section>
+${photoSlim(['voiture-atelier', 'pneu-atelier', 'caisse-outils'].map(photoBySlug), 'Ambiance d’atelier, photos d’illustration')}
 <section class="wrap recognize" aria-labelledby="rec-h">
   <div data-reveal>
     <h2 id="rec-h" data-split>Comment nous reconnaître</h2>
@@ -210,9 +218,9 @@ ${pageHead({ title: 'Infos pratiques', lead: 'Où nous trouver, quand venir, com
   </div>
 </section>
 <section class="wrap pay-row" aria-label="Paiement et services">
-  <div class="info-card" data-reveal><h2>Paiement</h2><p>Carte bancaire, Visa, Mastercard, espèces et chèque.</p></div>
-  <div class="info-card" data-reveal><h2>Accessibilité</h2><p>Stationnement adapté et entrée de plain-pied.</p></div>
-  <div class="info-card" data-reveal><h2>Véhicule de remplacement</h2><p>Selon disponibilité, à demander lors de la prise de rendez-vous.</p></div>
+  <div class="info-card" data-reveal>${photoThumb(photoBySlug('tableau-bord'), 'card-ph')}<h2>Paiement</h2><p>Carte bancaire, Visa, Mastercard, espèces et chèque.</p></div>
+  <div class="info-card" data-reveal>${photoThumb(photoBySlug('suv-atelier'), 'card-ph')}<h2>Accessibilité</h2><p>Stationnement adapté et entrée de plain-pied.</p></div>
+  <div class="info-card" data-reveal>${photoThumb(photoBySlug('voiture-pont'), 'card-ph')}<h2>Véhicule de remplacement</h2><p>Selon disponibilité, à demander lors de la prise de rendez-vous.</p></div>
 </section>
 ${finalCta('À bientôt au garage', 'Du lundi au vendredi, de 8 h à 12 h et de 13 h à 18 h.')}`
   return { html }

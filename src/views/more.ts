@@ -9,7 +9,7 @@ import { carSVG } from '../core/art'
 import { gsap } from '../core/motion'
 import { esc, frDate, norm, reducedMotion, typo, u } from '../core/dom'
 import { ico } from '../core/icons'
-import { arrowLink, bindChips, callButton, chips, finalCta, pageHead, photoThumb, photoFig } from './ui'
+import { arrowLink, bindChips, callButton, chips, finalCta, pageHead, photoThumb, photoFig, photoSlim } from './ui'
 import { photos, photoBySlug } from '../data/photos'
 
 const postPhoto: Record<string, string> = {
@@ -110,6 +110,7 @@ export function faqView(): View {
   const groups = Array.from(new Set(faq.map((f) => f.group)))
   const html = `
 ${pageHead({ title: 'Questions fréquentes', lead: 'Rendez-vous, devis, véhicule de remplacement, hybrides et GPL: les réponses courtes. Pour le reste, appelez-nous.', crumb: [['Questions', '']] })}
+${photoSlim(['controle-moteur', 'caisse-outils', 'piles-pneus'].map(photoBySlug), 'Au comptoir et à l’atelier, photos d’illustration')}
 <section class="wrap faq-wrap" aria-label="Questions fréquentes">
   <label class="search" for="fq" data-reveal>${ico.search(20)}<span class="sr-only">Chercher dans les questions</span><input id="fq" type="search" placeholder="Chercher : devis, paiement…" autocomplete="off" /></label>
   <p class="count" id="fcount" aria-live="polite"></p>
@@ -181,6 +182,7 @@ ${pageHead({ title: 'Décrivez votre problème', lead: 'Marque, modèle, ce que 
     <p class="fine" id="copy-ok" hidden>Texte copié.</p>
   </aside>
   <aside class="devis-side" data-reveal>
+    ${photoThumb(photoBySlug('controle-moteur'), 'card-ph')}
     <h2>Avant de nous écrire</h2>
     <ul class="ticks"><li>Le devis est gratuit.</li><li>Nous cherchons la cause avant de parler de pièces.</li><li>Rien n’est fait sans votre accord.</li></ul>
     <p>Fermé le week-end: un message laissé le samedi sera lu le lundi.</p>
@@ -238,6 +240,7 @@ ${pageHead({ title: 'Décrivez votre problème', lead: 'Marque, modèle, ce que 
 export function legalView(): View {
   const html = `
 ${pageHead({ title: 'Mentions légales', crumb: [['Mentions légales', '']] })}
+${photoSlim(['pieces-etagere', 'reserve-pieces', 'piece-etabli'].map(photoBySlug), 'Photos d’illustration', 'is-short')}
 <section class="wrap legal">
   <h2>Éditeur</h2>
   <p>${SITE.legalName}, ${SITE.legalForm}, SIREN ${SITE.siren}, SIRET ${SITE.siret}, code NAF ${SITE.naf}. Siège: ${SITE.street}, ${SITE.zip} ${SITE.city}. Téléphone: ${SITE.phone}.</p>
@@ -246,7 +249,7 @@ ${pageHead({ title: 'Mentions légales', crumb: [['Mentions légales', '']] })}
   <h2>Hébergement</h2>
   <p>Site statique hébergé sur GitHub Pages.</p>
   <h2>Propriété intellectuelle</h2>
-  <p>Les dessins de ce site sont des créations originales. Aucune photographie ni aucun logo de marque n’est utilisé. Les noms de marques de pièces et de voitures sont cités à titre indicatif.</p>
+  <p>Les dessins de ce site sont des créations originales. Les photographies sont des photos d’illustration issues d’Unsplash (licence Unsplash), créditées sous chaque image: elles ne montrent ni le garage, ni son équipe, ni ses clients. Aucun logo de marque n’est utilisé. Les noms de marques de pièces et de voitures sont cités à titre indicatif.</p>
   <h2>Responsable de la publication</h2>
   <p>À renseigner avec le gérant du garage avant la mise en ligne définitive.</p>
 </section>`
@@ -256,9 +259,12 @@ ${pageHead({ title: 'Mentions légales', crumb: [['Mentions légales', '']] })}
 export function privacyView(): View {
   const html = `
 ${pageHead({ title: 'Confidentialité', crumb: [['Confidentialité', '']] })}
+${photoSlim(['caisse-outils', 'cle-mains', 'pieces-vrac'].map(photoBySlug), 'Photos d’illustration', 'is-short')}
 <section class="wrap legal">
   <h2>Données collectées</h2>
   <p>Ce site ne collecte aucune donnée personnelle, n’utilise aucun cookie de suivi et n’envoie aucun formulaire. Le formulaire de devis prépare un texte dans votre navigateur: rien n’est transmis tant que vous n’appelez pas ou n’écrivez pas vous-même.</p>
+  <h2>Photos</h2>
+  <p>Les photos d’illustration sont servies depuis ce site, sans appel à un service tiers.</p>
   <h2>Services tiers</h2>
   <p>Les liens vers Google Maps, OpenStreetMap et Facebook mènent vers des sites tiers qui ont leur propre politique de confidentialité.</p>
   <h2>Contact</h2>

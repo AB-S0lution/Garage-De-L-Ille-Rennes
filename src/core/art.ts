@@ -1,4 +1,4 @@
-// Tout le dessin du site est du SVG original (aucune photo, aucun logo de marque).
+// Dessins SVG originaux (aucun logo de marque). Les photos d'illustration sont à part, dans data/photos.ts.
 import type { PartShape } from '../data/parts'
 import type { ZoneId } from '../data/families'
 import type { Landmark } from '../data/misc'
@@ -147,8 +147,8 @@ export function carSVG(opts: CarOptions = {}): string {
     <path class="leader" data-draw d="M290 250 V70" stroke-dasharray="5 5" stroke-opacity=".6"/>
     <path class="leader" data-draw d="M290 250 L170 70 M290 250 L410 70" stroke-dasharray="5 5" stroke-opacity=".6"/>
     <g class="ex-part ex-disc">${glyph('disc', 'new', 290, 8, 112)}<text x="290" y="-62" text-anchor="middle" class="callout">DISQUE</text></g>
-    <g class="ex-part ex-worn">${glyph('pad', 'worn', 160, 24, 96)}${wearTag(120, 56)}<text x="160" y="-34" text-anchor="middle" class="callout">PLAQUETTE USÉE</text></g>
-    <g class="ex-part ex-new">${glyph('pad', 'new', 420, 24, 96)}<text x="420" y="-34" text-anchor="middle" class="callout new">PLAQUETTE NEUVE</text></g>
+    <g class="ex-part ex-worn">${glyph('pad', 'worn', 160, 24, 96)}${wearTag(120, 56)}<text x="150" y="-34" text-anchor="middle" class="callout">PLAQUETTE USÉE</text></g>
+    <g class="ex-part ex-new">${glyph('pad', 'new', 420, 24, 96)}<text x="430" y="-34" text-anchor="middle" class="callout new">PLAQUETTE NEUVE</text></g>
   </g>`
       : ''
   }
