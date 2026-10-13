@@ -2868,6 +2868,7 @@ section {
 
 /* Accueil: bande défilante */
 .ph-strip {
+  position: relative;
   padding-block: clamp(48px, 7vw, 96px) 0;
   overflow: hidden;
 }
@@ -2877,6 +2878,7 @@ section {
   width: max-content;
 }
 .ph-strip-it {
+  position: relative;
   flex: 0 0 auto;
   width: clamp(200px, 26vw, 320px);
 }
