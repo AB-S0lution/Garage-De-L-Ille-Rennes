@@ -179,8 +179,7 @@ export function shopfrontSVG(): string {
     <circle cx="116" cy="198" r="9"/><circle cx="126" cy="203" r="7"/>
   </g>
   <path d="M152 59 l14 8 l-14 8 Z" class="sign-arrow"/>
-  <text x="176" y="74" class="sign-text-1">GARAGE</text>
-  <text x="258" y="74" class="sign-text-2">DE L’ILLE</text>
+  <text x="176" y="74" textLength="212" lengthAdjust="spacingAndGlyphs"><tspan class="sign-text-1">GARAGE</tspan><tspan class="sign-text-2" dx="10">DE L’ILLE</tspan></text>
 </svg>`
 }
 

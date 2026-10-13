@@ -42,7 +42,7 @@ export function atelierView(): View {
 ${pageHead({ title: 'Nos prestations', lead: 'Cinquante travaux courants, du simple filtre à la distribution. Les tarifs ci-dessous sont des exemples indicatifs: le devis est toujours gratuit et rien n’est fait sans votre accord.', crumb: [['Atelier', '']] })}
 <section class="wrap catalog" aria-label="Catalogue des prestations">
   <div class="filters" data-reveal>
-    <label class="search" for="q">${ico.search(20)}<span class="sr-only">Rechercher une prestation</span><input id="q" type="search" placeholder="Vidange, plaquettes, FAP, distribution…" autocomplete="off" /></label>
+    <label class="search" for="q">${ico.search(20)}<span class="sr-only">Rechercher une prestation</span><input id="q" type="search" placeholder="Vidange, freins, FAP…" autocomplete="off" /></label>
     <div class="f-row"><span class="f-lbl mono">Famille</span>${chips([{ value: '', label: 'Toutes' }, ...families.map((f) => ({ value: f.slug, label: f.name }))], 'Famille', '')}</div>
     <div class="f-row"><span class="f-lbl mono">Énergie</span>${chips([{ value: '', label: 'Toutes' }, { value: 'thermique', label: 'Thermique' }, { value: 'hybride', label: 'Hybride' }, { value: 'gpl', label: 'GPL' }], 'Énergie', '')}</div>
     <div class="f-row"><span class="f-lbl mono">Durée</span>${chips([{ value: '', label: 'Toutes' }, { value: 'short', label: 'Moins de 1 h' }, { value: 'mid', label: '1 à 3 h' }, { value: 'long', label: 'Plus de 3 h' }], 'Durée', '')}</div>

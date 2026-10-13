@@ -16,7 +16,7 @@ export function diagnosticView(): View {
 ${pageHead({ title: 'Ça fait quel bruit ?', lead: 'Choisissez ce que vous entendez, voyez ou sentez. Nous vous montrons la zone concernée et les pistes les plus probables. Ce sont des pistes, pas un diagnostic: seul un essai et la valise électronique permettent de le poser.', crumb: [['Diagnostic', '']] })}
 <section class="wrap finder" aria-label="Chercheur de symptômes">
   <div class="finder-left" data-reveal>
-    <label class="search" for="sq">${ico.search(20)}<span class="sr-only">Filtrer les symptômes</span><input id="sq" type="search" placeholder="Filtrer: freinage, fumée, voyant…" autocomplete="off" /></label>
+    <label class="search" for="sq">${ico.search(20)}<span class="sr-only">Filtrer les symptômes</span><input id="sq" type="search" placeholder="Filtrer : freins, fumée, voyant…" autocomplete="off" /></label>
     <div class="chips sym-chips" role="group" aria-label="Symptômes">${symptoms
       .map((s) => `<button type="button" class="chip" data-id="${s.id}" aria-pressed="false">${esc(s.label)}</button>`)
       .join('')}</div>

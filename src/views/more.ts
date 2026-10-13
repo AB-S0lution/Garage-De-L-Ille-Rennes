@@ -111,7 +111,7 @@ export function faqView(): View {
   const html = `
 ${pageHead({ title: 'Questions fréquentes', lead: 'Rendez-vous, devis, véhicule de remplacement, hybrides et GPL: les réponses courtes. Pour le reste, appelez-nous.', crumb: [['Questions', '']] })}
 <section class="wrap faq-wrap" aria-label="Questions fréquentes">
-  <label class="search" for="fq" data-reveal>${ico.search(20)}<span class="sr-only">Chercher dans les questions</span><input id="fq" type="search" placeholder="Chercher: devis, paiement, hybride…" autocomplete="off" /></label>
+  <label class="search" for="fq" data-reveal>${ico.search(20)}<span class="sr-only">Chercher dans les questions</span><input id="fq" type="search" placeholder="Chercher : devis, paiement…" autocomplete="off" /></label>
   <p class="count" id="fcount" aria-live="polite"></p>
   <div id="faq-groups">${groups
     .map(

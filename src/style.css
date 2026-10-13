@@ -2976,3 +2976,47 @@ section {
 .gal-note {
   margin-top: 16px;
 }
+
+/* ---------- Téléphone : lisibilité des dessins et cibles tactiles ---------- */
+@media (max-width: 599px) {
+  .car-svg .callout {
+    font-size: 22px;
+    letter-spacing: 0;
+  }
+  .car-svg .tag text {
+    font-size: 13px;
+    letter-spacing: 0;
+  }
+  .foot-links li {
+    margin-bottom: 0;
+  }
+  .foot-links a,
+  .site-footer address a,
+  .foot-legal a {
+    min-height: 44px;
+  }
+  .foot-legal a {
+    display: inline-flex;
+    align-items: center;
+  }
+  .crumb {
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .crumb a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .arrow-link {
+    position: relative;
+  }
+  .arrow-link::before {
+    content: '';
+    position: absolute;
+    inset: -8px -4px;
+  }
+  .foot-legal {
+    font-size: 0.875rem;
+  }
+}
