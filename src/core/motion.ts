@@ -50,6 +50,25 @@ export const ANY_MOTION = '(prefers-reduced-motion: no-preference)'
 const fr = (n: number, decimals = 0) => n.toLocaleString('fr-FR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
 
 /**
+ * Apparition au défilement des blocs [data-reveal]. Aussi utilisé par les vues qui
+ * redessinent une liste (filtres): sans cela, les nouveaux blocs resteraient à l'opacité 0 du CSS.
+ */
+export function revealBatch(els: Element[]) {
+  if (!els.length) return
+  if (reducedMotion()) {
+    gsap.set(els, { opacity: 1, y: 0 })
+    return
+  }
+  const small = window.matchMedia('(max-width: 899px), (pointer: coarse)').matches
+  ScrollTrigger.batch(els, {
+    start: 'top 94%',
+    once: true,
+    onEnter: (batch) =>
+      gsap.to(batch, { opacity: 1, y: 0, duration: small ? 0.6 : 0.85, ease: 'power3.out', stagger: small ? 0.05 : 0.07, overwrite: true }),
+  })
+}
+
+/**
  * Mouvement commun à toutes les pages. Retourne le nettoyage.
  * Les états initiaux sont posés en CSS (classe .js-motion), jamais cachés sans JS.
  */
@@ -86,12 +105,7 @@ export function enhance(root: HTMLElement, extra?: (ctx: gsap.Context) => void):
       else doSplit()
 
       // Blocs: apparition groupée dans l'ordre de lecture
-      ScrollTrigger.batch($$('[data-reveal]', root), {
-        start: 'top 92%',
-        once: true,
-        onEnter: (batch) =>
-          gsap.to(batch, { opacity: 1, y: 0, duration: small ? 0.6 : 0.85, ease: 'power3.out', stagger: small ? 0.05 : 0.07, overwrite: true }),
-      })
+      revealBatch($$('[data-reveal]', root))
 
       // Tracés SVG qui se dessinent
       $$<SVGGeometryElement>('[data-draw]', root).forEach((p) => {
@@ -150,15 +164,18 @@ export function enhance(root: HTMLElement, extra?: (ctx: gsap.Context) => void):
   // Filet de sécurité: si un déclencheur rate (onglet en arrière-plan, calcul faussé par une image),
   // tout ce qui est déjà dans l'écran ou au-dessus devient visible, sans animation.
   const failsafe = () => {
+    // En bas de page, les derniers blocs n'atteignent parfois jamais la ligne de déclenchement.
+    const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4
     $$('[data-reveal]', root).forEach((el) => {
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.85 && getComputedStyle(el).opacity === '0') gsap.set(el, { opacity: 1, y: 0 })
+      if ((atEnd || el.getBoundingClientRect().top < window.innerHeight) && getComputedStyle(el).opacity === '0')
+        gsap.to(el, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', overwrite: true })
     })
     $$('[data-split]', root).forEach((el) => {
       if (getComputedStyle(el).visibility === 'hidden') gsap.set(el, { visibility: 'visible' })
     })
   }
   const t1 = window.setTimeout(failsafe, 2500)
-  const onScrollEnd = () => window.setTimeout(failsafe, 1200)
+  const onScrollEnd = () => window.setTimeout(failsafe, 350)
   window.addEventListener('scrollend', onScrollEnd, { passive: true })
   return () => {
     window.clearTimeout(t1)

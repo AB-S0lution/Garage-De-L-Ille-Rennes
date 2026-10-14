@@ -4,7 +4,7 @@ import { voyants } from '../data/voyants'
 import { checklists } from '../data/checklists'
 import { familyBySlug } from '../data/families'
 import { carSVG, voyantBadge } from '../core/art'
-import { gsap } from '../core/motion'
+import { gsap, scrollToEl } from '../core/motion'
 import { esc, norm, reducedMotion, typo, u } from '../core/dom'
 import { ico } from '../core/icons'
 import { arrowLink, callButton, finalCta, pageHead, photoFig, photoSlim } from './ui'
@@ -77,6 +77,9 @@ ${finalCta('Une piste ne suffit pas ?', 'Appelez-nous, décrivez le bruit comme 
           <p>${s.advice}</p>
           <div class="res-actions">${callButton('Appeler le garage')}${arrowLink(u('/atelier/' + f.slug), f.name)}</div>`)
         if (!reducedMotion()) gsap.from(result.children, { y: 12, opacity: 0, duration: 0.45, ease: 'power3.out', stagger: 0.05 })
+        // Sur téléphone, la voiture et les pistes sont sous la longue liste de symptômes: on les amène à l'écran.
+        const box = car.getBoundingClientRect()
+        if (box.top > window.innerHeight * 0.6 || box.bottom < 0) scrollToEl(car.closest('.mini-car') ?? result)
       }
       root.querySelector('.sym-chips')!.addEventListener('click', (e) => {
         const b = (e.target as HTMLElement).closest<HTMLButtonElement>('.chip')

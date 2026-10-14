@@ -6,7 +6,7 @@ import { symptoms } from '../data/symptoms'
 import { makes } from '../data/misc'
 import { SITE, phoneHref } from '../data/site'
 import { carSVG } from '../core/art'
-import { gsap } from '../core/motion'
+import { gsap, revealBatch } from '../core/motion'
 import { esc, frDate, norm, reducedMotion, typo, u } from '../core/dom'
 import { ico } from '../core/icons'
 import { arrowLink, bindChips, callButton, chips, finalCta, pageHead, photoThumb, photoFig, photoSlim } from './ui'
@@ -54,7 +54,8 @@ ${finalCta('Une question précise ?', 'Un article ne remplace pas un regard sur 
       const draw = (cat: string) => {
         const l = sorted.filter((p) => !cat || p.category === cat)
         grid.innerHTML = typo(l.map((p, i) => card(p, i === 0 && !cat)).join(''))
-        if (!reducedMotion()) gsap.from(grid.children, { y: 16, opacity: 0, duration: 0.5, ease: 'power3.out', stagger: 0.04, clearProps: 'all' })
+        // Les cartes sont créées après la mise en place des apparitions: on les inscrit ici.
+        revealBatch(Array.from(grid.children))
       }
       bindChips(root.querySelector<HTMLElement>('.chips')!, draw)
       draw('')

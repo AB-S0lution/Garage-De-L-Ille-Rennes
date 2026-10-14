@@ -191,7 +191,7 @@ export function quartierSVG(points: Landmark[]): string {
     .filter((p) => p.id !== 'metro' && p.id !== 'ateliers')
     .map(
       (p) =>
-        `<g class="lm"><circle cx="${p.x}" cy="${p.y}" r="1.6"/><text x="${p.x + 3}" y="${p.y + 1}" class="lm-t">${p.name.length > 22 ? p.name.slice(0, 20) + '...' : p.name}</text></g>`,
+        `<g class="lm"><circle cx="${p.x}" cy="${p.y}" r="1.6"/><text x="${p.x > 70 ? p.x - 3 : p.x + 3}" y="${p.y + 1}"${p.x > 70 ? ' text-anchor="end"' : ''} class="lm-t">${p.name.length > 22 ? p.name.slice(0, 20) + '...' : p.name}</text></g>`,
     )
     .join('')
   return `<svg class="quartier-svg" viewBox="0 0 100 100" role="img" aria-label="Plan schématique: le garage rue de Jinan et la station de métro Les Gayeulles à environ 220 mètres à pied">
